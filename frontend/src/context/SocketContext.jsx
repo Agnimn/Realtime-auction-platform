@@ -7,21 +7,18 @@ const SocketContext = createContext();
 export const useSocket = () => useContext(SocketContext);
 
 /**
- * Derive the Socket.IO server URL dynamically from the browser's current hostname.
- * - On desktop (localhost): connects to http://localhost:5000
- * - On mobile (192.168.x.x): connects to http://192.168.x.x:5000
- * - In production: connects to the same origin (no port override)
+ * Derive the Socket.IO server URL.
+ * - Uses VITE_SOCKET_URL env variable if set (production / deployment)
+ * - Falls back to dynamic hostname detection for local development
  */
 const getSocketUrl = () => {
-  const hostname = window.location.hostname; // e.g. "localhost" or "192.168.1.5"
-  const isProduction = import.meta.env.PROD;
-
-  if (isProduction) {
-    // In production the API and socket are on the same origin
-    return window.location.origin;
+  // If the env variable is set, always use it (works for production builds)
+  if (import.meta.env.VITE_SOCKET_URL) {
+    return import.meta.env.VITE_SOCKET_URL;
   }
 
-  // In development, backend runs on port 5000
+  // Fallback: local development — backend runs on port 5000
+  const hostname = window.location.hostname; // e.g. "localhost" or "192.168.1.5"
   return `http://${hostname}:5000`;
 };
 

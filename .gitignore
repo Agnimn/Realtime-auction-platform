@@ -16,6 +16,9 @@ pnpm-debug.log*
 .env.test.local
 .env.production.local
 
+# Allow frontend .env (contains only public VITE_ URLs, no secrets)
+!frontend/.env
+
 # ========================
 # Build output
 # ========================
