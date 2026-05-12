@@ -31,13 +31,13 @@ app.set('trust proxy', 1);
 const server = http.createServer(app);
 
 // ─── CORS ─────────────────────────────────────────────────────────────────────
-// In development, allow any origin so mobile devices on the same network can connect
-const corsOrigin = process.env.NODE_ENV === 'production'
-  ? process.env.CLIENT_URL
-  : (origin, callback) => callback(null, true); // Allow all origins in dev
+const allowedOrigins = [
+  'https://realtime-auction-platform-two.vercel.app',
+  'http://localhost:5173',
+];
 
 app.use(cors({
-  origin: corsOrigin,
+  origin: allowedOrigins,
   credentials: true,
 }));
 
@@ -56,7 +56,7 @@ app.use('/api', limiter);
 // ─── Socket.IO Setup ───────────────────────────────────────────────────────────
 const io = new Server(server, {
   cors: {
-    origin: corsOrigin,
+    origin: allowedOrigins,
     methods: ['GET', 'POST'],
     credentials: true,
   },
